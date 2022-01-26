@@ -1,0 +1,70 @@
+---
+title: "BIOL 432 Assignment 3"
+output:
+  pdf_document:
+    toc: FALSE
+  html_document:
+    toc: TRUE
+---
+
+### Project Info 
+
+[Github repository (link)](https://github.com/ameliems99/A3_BIOL_432)  
+**Date:** 25/01/2022  
+**Author:** Amelie Mahrt-Smith, 20054398  
+**Github user:** ameliems99  
+
+### Data Wrangling   
+  
+Load required packages:
+```{r message = FALSE}
+library(dplyr) 
+```
+
+Load and 'wrangle' data:
+```{r}
+Fallo <- read.csv("./InputData/FallopiaData.csv") %>%
+  filter(Total >= 60) %>%  #remove rows with Total Biomass <60
+  select(Total, Taxon, Scenario, Nutrients) %>%  #Keep only these columns, in this order
+  mutate(TotalG = Total/1000, Total = NULL) %>%  #replace Total with TotalG
+  select(TotalG, everything())  #re-order columns to put TotalG first
+```
+
+
+### Custom Function
+
+Function:   
+
+'a3_func()' takes two inputs from the user: a vector of data specified by 'var', and a string defining a calculation to perform specified by 'calc'. The function can calculate the mean, sum, or number of observations of the vector; all other operations result in error. 
+```{r}
+a3_func <- function (var = 0, calc = ""){ 
+  if (calc == "Average"){
+      return(mean(var))
+  } 
+  if (calc == "Sum"){
+    return(sum(var))
+  }
+  if (calc == "Observations"){
+    return(length(var))
+  }
+  else {
+    print("Error in 'calc': invalid argument")
+  }
+}
+```
+
+Example: 
+```{r}
+a3_func(Fallo$Taxon, "Observations") #count the number of observations in 'Taxon' column
+
+FalloL <- filter(Fallo, Nutrients == "low")
+FalloH <- filter(Fallo, Nutrients == "high")
+cat("Low nutrients average biomass (g) = ", a3_func(FalloL$TotalG, "Average"), 
+      "\nHigh nutrients average biomass (g) = ", a3_func(FalloH$TotalG, "Average")) #calculate average 'TotalG' for each 'Nutrient' concentration
+```
+
+
+### Output 
+```{r}
+write.csv(Fallo, "./Output/WrangledData.csv")
+```
