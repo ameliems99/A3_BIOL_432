@@ -1,7 +1,6 @@
 ---
 output:
   html_document: default
-  pdf_document: default
 ---
 
 ### Info
@@ -13,9 +12,12 @@ GitHub User: ameliems99
 ### Regex  
 ```{r}
 library(dplyr) #load required package
+
 MData <- read.csv("./InputData/A4_MAHRTSMITH_AMELIE_measurements.csv", header = TRUE)  #import dataset
+
 MData <- MData %>%
   mutate(Sp = gsub("(\\w)\\w+(.*)", "\\1\\.\\2", MData$Organism)) %>%  #create column 'Sp' with 'Organism' genus abbreviated
-  select(Sp, Limb.width:Observer) %>%  #replace 'Organism' with 'Sp' as first column
-  write.csv("./Output/A4_MAHRTSMITH_AMELIE_MeasShort.csv")  #save as new file in 'Output' folder
+  select(Sp, Limb.width:Observer)  #replace 'Organism' with 'Sp' as first column
+
+write.csv(MData, "./Output/A4_MAHRTSMITH_AMELIE_MeasShort.csv")  #save as new file in 'Output' folder
 ```
